@@ -38,11 +38,11 @@ transform = transforms.Compose([transforms.PILToTensor()])
 device = "cpu" #cuda" if torch.cuda.is_available() else "cpu" # If using GPU then use mixed precision training.
 clip_device = "cpu" #"cuda"
 
-base_clip, preprocess = clip.load("ViT-L/14", device=device)
-clip_model = base_clip
-k_fold = 1
-num_evidence = 1
+# base_clip, preprocess = clip.load("ViT-L/14", device=device)
+# clip_model = base_clip
 
+k_fold = 1
+num_evidence = 10
 RED_DOT_version = "baseline"
 use_evidence=num_evidence   #10
 use_evidence_neg=0
@@ -138,7 +138,7 @@ optimizer = torch.optim.Adam(
 )
 
 
-PATH = "./models/reddot_l14_baseline.pt"  
+# PATH = "./models/reddot_l14_baseline.pt"  
 PATH = './models/17thSep_model(4-8-128)_news_clippings_balanced_multimodal_0_RED_DOT_1_baseline.pt'
 
 checkpoint = torch.load(PATH)
