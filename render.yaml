@@ -1,9 +1,11 @@
 services:
   # A Docker web service
   - type: web
-    name: fastapi-example
+    name: fnd_gui
     runtime: python
     plan: free
     autoDeploy: false
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    startCommand: |
+      python download_model.py &&  # Check if model exists and download if not
+      uvicorn main:app --host 0.0.0.0 --port $PORT
