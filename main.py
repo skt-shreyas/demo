@@ -139,9 +139,17 @@ optimizer = torch.optim.Adam(
 
 
 # PATH = "./models/reddot_l14_baseline.pt"  
-PATH = './models/17thSep_model(4-8-128)_news_clippings_balanced_multimodal_0_RED_DOT_1_baseline.pt'
+# PATH = './models/17thSep_model(4-8-128)_news_clippings_balanced_multimodal_0_RED_DOT_1_baseline.pt'
 
-checkpoint = torch.load(PATH)
+PATH = "/var/model_storage/model.pth"
+if os.path.exists(PATH):
+    checkpoint = torch.load(MODEL_PATH)
+    print("Model loaded successfully!")
+else:
+    print("Model not found.")
+
+#checkpoint = torch.load(PATH)
+
 model.load_state_dict(checkpoint["model_state_dict"])
 optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 epoch = checkpoint["epoch"]
@@ -181,7 +189,7 @@ from skimage.transform import resize
 from skimage import io as io
 import torch, pickle
 
-from SAFE.SAFE_utils import *
+#from SAFE.SAFE_utils import *
 
 import torch.nn.functional as F
 from torch import nn
@@ -197,15 +205,15 @@ from torch import nn
 # net_SAFE.eval()
 # classifier_SAFE = pickle.load(open("./SAFE/classifier_svm.sav", 'rb'))
 
-checkpoint_safe = torch.load('./models/test11_with_Clip_model_nc.pth.tar')
+#checkpoint_safe = torch.load('./models/test11_with_Clip_model_nc.pth.tar')
 # model_safe=Siamese(latent_dim=256).to(device)
 # model_safe.load_state_dict(checkpoint_safe['model_state_dict'])
 # model_safe.eval()
-mlp_model = MLP().to(device)
-mlp_model.load_state_dict(checkpoint_safe['mlp_model_state_dict'])
-mlp_model.eval()
+#mlp_model = MLP().to(device)
+#mlp_model.load_state_dict(checkpoint_safe['mlp_model_state_dict'])
+#mlp_model.eval()
 
-print('SAFE Classifier loaded')
+#print('SAFE Classifier loaded')
 
 def get_clip_feature_queries(img_path, caption):
     with torch.no_grad():
