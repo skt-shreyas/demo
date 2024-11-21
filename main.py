@@ -138,17 +138,17 @@ optimizer = torch.optim.Adam(
 )
 
 
-# PATH = "./models/reddot_l14_baseline.pt"  
-# PATH = './models/17thSep_model(4-8-128)_news_clippings_balanced_multimodal_0_RED_DOT_1_baseline.pt'
+#PATH = "./models/reddot_l14_baseline.pt"  
+PATH = './17thSep_model(4-8-128)_news_clippings_balanced_multimodal_0_RED_DOT_1_baseline.pt'
 
-PATH = "/var/model_storage/model.pth"
-if os.path.exists(PATH):
-    checkpoint = torch.load(MODEL_PATH)
-    print("Model loaded successfully!")
-else:
-    print("Model not found.")
+#PATH = "/var/model_storage/model.pth"
+#if os.path.exists(PATH):
+#    checkpoint = torch.load(MODEL_PATH)
+#    print("Model loaded successfully!")
+#else:
+#    print("Model not found.")
 
-#checkpoint = torch.load(PATH)
+checkpoint = torch.load(PATH)
 
 model.load_state_dict(checkpoint["model_state_dict"])
 optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
