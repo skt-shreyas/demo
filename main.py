@@ -10,7 +10,6 @@ import torch
 from lavis.models import load_model_and_preprocess
 from PIL import Image
 import torchvision.transforms as transforms
-import clip 
 import torch
 import os
 import itertools
@@ -22,7 +21,7 @@ from models import RED_DOT #_dom_vec_attn
 from sklearn import metrics
 # from sklearn.metrics.pairwise import cosine_similarity
 from torch.nn.functional import cosine_similarity
-import clip
+# import clip
 from utils import (
     set_seed,
     prepare_input
@@ -138,18 +137,10 @@ optimizer = torch.optim.Adam(
 )
 
 
-#PATH = "./models/reddot_l14_baseline.pt"  
-PATH = './17thSep_model(4-8-128)_news_clippings_balanced_multimodal_0_RED_DOT_1_baseline.pt'
-
-#PATH = "/var/model_storage/model.pth"
-#if os.path.exists(PATH):
-#    checkpoint = torch.load(MODEL_PATH)
-#    print("Model loaded successfully!")
-#else:
-#    print("Model not found.")
+# PATH = "./models/reddot_l14_baseline.pt"  
+PATH = './models/17thSep_model(4-8-128)_news_clippings_balanced_multimodal_0_RED_DOT_1_baseline.pt'
 
 checkpoint = torch.load(PATH)
-
 model.load_state_dict(checkpoint["model_state_dict"])
 optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 epoch = checkpoint["epoch"]
@@ -189,7 +180,7 @@ from skimage.transform import resize
 from skimage import io as io
 import torch, pickle
 
-#from SAFE.SAFE_utils import *
+from SAFE.SAFE_utils import *
 
 import torch.nn.functional as F
 from torch import nn
@@ -205,15 +196,15 @@ from torch import nn
 # net_SAFE.eval()
 # classifier_SAFE = pickle.load(open("./SAFE/classifier_svm.sav", 'rb'))
 
-#checkpoint_safe = torch.load('./models/test11_with_Clip_model_nc.pth.tar')
+checkpoint_safe = torch.load('./models/test11_with_Clip_model_nc.pth.tar')
 # model_safe=Siamese(latent_dim=256).to(device)
 # model_safe.load_state_dict(checkpoint_safe['model_state_dict'])
 # model_safe.eval()
-#mlp_model = MLP().to(device)
-#mlp_model.load_state_dict(checkpoint_safe['mlp_model_state_dict'])
-#mlp_model.eval()
+mlp_model = MLP().to(device)
+mlp_model.load_state_dict(checkpoint_safe['mlp_model_state_dict'])
+mlp_model.eval()
 
-#print('SAFE Classifier loaded')
+print('SAFE Classifier loaded')
 
 def get_clip_feature_queries(img_path, caption):
     with torch.no_grad():
@@ -424,24 +415,24 @@ def run_all_algos(processed_items, q_img, q_caption, evidence_images_path, evide
 
         x = prepare_input(fusion_method, fuse_evidence, use_evidence, images, texts, None, None, X_all)
         predictions = model(x, False, X_labels)
-        all_head_attn_maps = predictions[2]
-        stacked_attns= torch.stack(all_head_attn_maps)
-        attn_map = torch.mean(stacked_attns, dim=0) #average across all 6 attn heads
+        # all_head_attn_maps = predictions[2]
+        # stacked_attns= torch.stack(all_head_attn_maps)
+        # attn_map = torch.mean(stacked_attns, dim=0) #average across all 6 attn heads
         
         num_text_evidences = len(evidence_captions)
         num_img_evidences = len(evidence_images)
 
-        attn_text_evidences_text = attn_map.squeeze(0)[0, 16: 16+num_text_evidences] #cls_tken attns over the text evidences
-        top_values_text, top_indices_text = torch.topk(attn_text_evidences_text, k=min(num_text_evidences, 3))
+        # attn_text_evidences_text = attn_map.squeeze(0)[0, 16: 16+num_text_evidences] #cls_tken attns over the text evidences
+        # top_values_text, top_indices_text = torch.topk(attn_text_evidences_text, k=min(num_text_evidences, 3))
 
-        attn_img_evidences_images = attn_map.squeeze(0)[0, 6: 6+num_img_evidences] #cls_tken attns over the image evidences
-        top_values_img, top_indices_img = torch.topk(attn_img_evidences_images, k=min(num_img_evidences, 3))
+        # attn_img_evidences_images = attn_map.squeeze(0)[0, 6: 6+num_img_evidences] #cls_tken attns over the image evidences
+        # top_values_img, top_indices_img = torch.topk(attn_img_evidences_images, k=min(num_img_evidences, 3))
 
-        evidence_images_names = [img_path.split('/')[-1] for img_path in evidence_images]       # Order in which images are loaded
-        X_all_ordered_images = [evidence_images_names[i] for i in image_evidences_ranks]
+        # evidence_images_names = [img_path.split('/')[-1] for img_path in evidence_images]       # Order in which images are loaded
+        # X_all_ordered_images = [evidence_images_names[i] for i in image_evidences_ranks]
 
-        top_attended_images_names = [X_all_ordered_images[i] for i in top_indices_img.tolist()]
-        top_caption_indices = [text_evidences_ranks[i] for i in top_indices_text]
+        # top_attended_images_names = [X_all_ordered_images[i] for i in top_indices_img.tolist()]
+        # top_caption_indices = [text_evidences_ranks[i] for i in top_indices_text]
 
     # if SAFE_result is not None:
     #     SAFE_result = SAFE_result[0].item()
@@ -460,9 +451,9 @@ def run_all_algos(processed_items, q_img, q_caption, evidence_images_path, evide
     # print("ACLIP Output", prediction_ACLIP)
     # print("Image Attention", image_attention)
     print("REDDOT Prediction", predictions)
-    print("REDDOT : Top text indices", top_caption_indices)
-    print("REDDOT : Top image names", top_attended_images_names)
-    print("CCN_result", CCN_result)
+    # print("REDDOT : Top text indices", top_caption_indices)
+    # print("REDDOT : Top image names", top_attended_images_names)
+    # print("CCN_result", CCN_result)
     response_list = [SAFE_result, SAFE_probabilities, prediction_ACLIP, image_attention, predictions, CCN_result,top_caption_indices,top_attended_images_names]
     # response_list = [predictions,top_caption_indices,top_attended_images_names]
 
