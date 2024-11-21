@@ -48,7 +48,7 @@ diffusers==0.27.2
 distlib==0.3.8
 einops==0.7.0
 einops-exts==0.0.4
-en-core-web-sm 
+#en-core-web-sm 
 entrypoints 
 executing 
 fairscale==0.4.4
