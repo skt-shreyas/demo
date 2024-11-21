@@ -3,6 +3,7 @@ services:
   - type: web
     name: fnd_gui
     runtime: python
+    pythonVersion: 3.9  # Specify your desired Python version
     plan: free
     autoDeploy: false
     buildCommand: pip install -r requirements.txt
