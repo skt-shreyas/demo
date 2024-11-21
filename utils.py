@@ -10,7 +10,7 @@ from sklearn import metrics
 from ast import literal_eval
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
-import scikitplot as skplt
+#import scikitplot as skplt
 
 def set_seed(seed):
     random.seed(seed)
