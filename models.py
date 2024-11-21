@@ -118,7 +118,6 @@ class RED_DOT(nn.Module):
         num_tokens = x.shape[1]
         dimensions = x.shape[2]
         y_relevance = None
-        # breakpoint()
         if not inference and "dual_stage" in self.model_version and self.model_version != "baseline":
             
             # Forward x with all evidence
@@ -151,7 +150,7 @@ class RED_DOT(nn.Module):
             mask[:, -self.num_evidence_tokens:] = positions_to_mask[:, -self.num_evidence_tokens:]
             mask = mask.to(self.device)
             x = x * (1 - mask.to(torch.float32).unsqueeze(2))
-                            
+              
         cls_token = self.cls_token.expand(b_size, 1, -1)        
         x = torch.cat((cls_token, x), dim=1)
         
@@ -159,8 +158,9 @@ class RED_DOT(nn.Module):
             x = self.transformer2(x)
             
         else:
-            x = self.transformer(x) 
-        # breakpoint()
+            #x, attn_wts = self.transformer(x, need_weights = True)
+            x= self.transformer(x)
+        attn_wts=None
         x_truth = x[:,0,:]
         y_truth = self.binary_classifier(x_truth)
         
@@ -182,4 +182,4 @@ class RED_DOT(nn.Module):
                 y_relevance = torch.stack(results, dim=1).view(b_size, -1) 
 
                     
-        return y_truth, y_relevance #, attn_wts
+        return y_truth, y_relevance, attn_wts
